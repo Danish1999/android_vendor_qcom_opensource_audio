@@ -20,6 +20,9 @@
 #define LOG_TAG "AudioPolicyManagerCustom"
 //#define LOG_NDEBUG 0
 
+// Add by AMT.meng.lv,20/19/2019, for ringtone, games audio-breaking issue begin
+#define SLOW_CPU_AUDIO_FLAG
+// Add by AMT.meng.lv,20/19/2019, for ringtone, games audio-breaking issue end
 //#define VERY_VERBOSE_LOGGING
 #ifdef VERY_VERBOSE_LOGGING
 #define ALOGVV ALOGV
@@ -1636,6 +1639,12 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
     if ((*flags & AUDIO_OUTPUT_FLAG_HW_AV_SYNC) != 0) {
         *flags = (audio_output_flags_t)(*flags | AUDIO_OUTPUT_FLAG_DIRECT);
     }
+
+// Add by AMT.meng.lv,20/19/2019, for ringtone, games audio-breaking issue begin
+#ifdef SLOW_CPU_AUDIO_FLAG
+    *flags = (audio_output_flags_t)(*flags & (~AUDIO_OUTPUT_FLAG_RAW));
+#endif
+// Add by AMT.meng.lv,20/19/2019, for ringtone, games audio-breaking issue end
 
     // Do internal direct magic here
     bool offload_disabled = mApmConfigs->isAudioOffloadDisabled();
